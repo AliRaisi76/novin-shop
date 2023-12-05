@@ -10,7 +10,7 @@ const {
 
 const router = express.Router();
 
-router.route('/category/:category').get(getProducts).post(createProduct);
+router.route('/categories/:category').get(getProducts).post(createProduct);
 router
   .route('/:id')
   .get(getOneProduct)
