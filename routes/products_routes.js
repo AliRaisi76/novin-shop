@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require('express')
 
 const {
   getProducts,
@@ -6,15 +6,11 @@ const {
   createProduct,
   updateProduct,
   deleteProduct,
-} = require('../controllers/products_controller');
+} = require('../controllers/products_controller')
 
-const router = express.Router();
+const router = express.Router()
 
-router.route('/categories/:category').get(getProducts).post(createProduct);
-router
-  .route('/:id')
-  .get(getOneProduct)
-  .put(updateProduct)
-  .delete(deleteProduct);
+router.route('/').get(getProducts).post(createProduct)
+router.route('/:id').get(getOneProduct).put(updateProduct).delete(deleteProduct)
 
-module.exports = router;
+module.exports = router
