@@ -1,4 +1,5 @@
 const Product = require('../models/Product')
+const ErrorResponse = require('../utils/ErrorResponse')
 
 // @desc Get all products in the DB
 // @route GET /api/v1/products
@@ -13,7 +14,7 @@ exports.getProducts = async (req, res, next) => {
       data: products,
     })
   } catch (err) {
-    console.log(err)
+    next(err)
   }
 }
 
@@ -23,16 +24,23 @@ exports.getProducts = async (req, res, next) => {
 exports.getOneProduct = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id)
+
+    if (!product) {
+      return res.status(404).json({
+        message: `Product was not found!`,
+      })
+    }
+
     res.status(200).json({
       message: 'Product fetched!',
       data: product,
     })
   } catch (err) {
-    console.log(err)
+    next(err)
   }
 }
 
-// @desc Add a product to a category to DB
+// @desc Add a product to DB
 // @route POST /api/v1/products/:category
 // @access Private
 exports.createProduct = async (req, res, next) => {
@@ -48,7 +56,7 @@ exports.createProduct = async (req, res, next) => {
       data: product,
     })
   } catch (err) {
-    console.log(err)
+    next(err)
   }
 }
 
@@ -71,7 +79,7 @@ exports.updateProduct = async (req, res, next) => {
       data: product,
     })
   } catch (err) {
-    console.log(err)
+    next(err)
   }
 }
 
@@ -91,6 +99,6 @@ exports.deleteProduct = async (req, res, next) => {
       data: {},
     })
   } catch (err) {
-    console.log(err)
+    next(err)
   }
 }
