@@ -40,7 +40,7 @@ exports.createProduct = async (req, res, next) => {
     const product = await Product.create(req.body)
     if (!product) {
       return res.status(404).json({
-        message: `Product was'nt found!`,
+        message: `Product was not found!`,
       })
     }
     res.status(201).json({
@@ -52,20 +52,45 @@ exports.createProduct = async (req, res, next) => {
   }
 }
 
-// @desc Get all products in a category
-// @route GET /api/v1/products/:category
-// @access Public
-exports.updateProduct = (req, res, next) => {
-  res.status(200).json({
-    message: 'Product updated!',
-  })
+// @desc Modify a product
+// @route UPDATE /api/v1/products/:id
+// @access private
+exports.updateProduct = async (req, res, next) => {
+  try {
+    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    })
+    if (!product) {
+      return res.status(404).json({
+        message: `Product was not found!`,
+      })
+    }
+    res.status(200).json({
+      message: 'Product updated!',
+      data: product,
+    })
+  } catch (err) {
+    console.log(err)
+  }
 }
 
-// @desc Get all products in a category
-// @route GET /api/v1/products/:category
-// @access Public
-exports.deleteProduct = (req, res, next) => {
-  res.status(200).json({
-    message: 'Product updated!',
-  })
+// @desc Delete a product
+// @route DELETE /api/v1/products/:id
+// @access Private
+exports.deleteProduct = async (req, res, next) => {
+  try {
+    const product = await Product.findByIdAndDelete(req.params.id)
+    if (!product) {
+      return res.status(404).json({
+        message: `Product was not found!`,
+      })
+    }
+    res.status(200).json({
+      message: 'Product updated!',
+      data: {},
+    })
+  } catch (err) {
+    console.log(err)
+  }
 }
