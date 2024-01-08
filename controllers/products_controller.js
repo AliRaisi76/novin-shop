@@ -6,7 +6,24 @@ const ErrorResponse = require('../utils/ErrorResponse')
 // @access Public
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find()
+    let query
+    let reqQuery = { ...req.query }
+
+    const priceRange = Object.keys(reqQuery.price)
+
+    priceRange.forEach((range) => {
+      reqQuery.price[range] = `${reqQuery.price[range]}00`
+    })
+
+    let queryString = JSON.stringify(reqQuery)
+    queryString = queryString.replace(
+      /\b(gt|gte|lt|lte|in)\b/g,
+      (match) => `$${match}`
+    )
+
+    query = Product.find(JSON.parse(queryString))
+
+    const products = await query
 
     res.status(200).json({
       message: 'All products fetched!',
