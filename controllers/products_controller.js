@@ -14,7 +14,8 @@ exports.getProducts = async (req, res, next) => {
     priceRange.forEach((range) => {
       reqQuery.price[range] = `${reqQuery.price[range]}00`
     })
-    const removeFields = ['select']
+
+    const removeFields = ['select', 'sort']
 
     removeFields.forEach((param) => delete reqQuery[param])
 
@@ -32,6 +33,13 @@ exports.getProducts = async (req, res, next) => {
       query = query.select(fields)
     }
 
+    // SORT
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ')
+      query = query.sort(sortBy)
+    } else {
+      query = query.sort('-price')
+    }
     const products = await query
 
     res.status(200).json({
