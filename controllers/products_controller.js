@@ -95,7 +95,7 @@ exports.deleteProduct = async (req, res, next) => {
       })
     }
     res.status(200).json({
-      message: 'Product updated!',
+      message: 'Product deleted!',
       data: {},
     })
   } catch (err) {
