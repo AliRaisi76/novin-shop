@@ -9,11 +9,14 @@ exports.getProducts = async (req, res, next) => {
     let query
     let reqQuery = { ...req.query }
 
+    // Convert the asked price from dollar form to cent form
     const priceRange = Object.keys(reqQuery.price)
-
     priceRange.forEach((range) => {
       reqQuery.price[range] = `${reqQuery.price[range]}00`
     })
+    const removeFields = ['select']
+
+    removeFields.forEach((param) => delete reqQuery[param])
 
     let queryString = JSON.stringify(reqQuery)
     queryString = queryString.replace(
@@ -22,6 +25,12 @@ exports.getProducts = async (req, res, next) => {
     )
 
     query = Product.find(JSON.parse(queryString))
+
+    // SELECT FIELDS
+    if (req.query.select) {
+      const fields = req.query.select.split(',').join(' ')
+      query = query.select(fields)
+    }
 
     const products = await query
 
