@@ -1,4 +1,4 @@
-const Product = require('../models/Product')
+const Product = require('../models/productModel')
 const ErrorResponse = require('../utils/ErrorResponse')
 
 // @desc Get all products in the DB
@@ -26,7 +26,7 @@ exports.getProducts = async (req, res, next) => {
     )
 
     query = Product.find(JSON.parse(queryString))
-
+    console.log(query)
     // SELECT FIELDS
     if (req.query.select) {
       const fields = req.query.select.split(',').join(' ')

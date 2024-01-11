@@ -2,7 +2,7 @@ const express = require('express')
 const dotenv = require('dotenv')
 const colors = require('colors')
 const morgan = require('morgan')
-const products = require('./routes/products_routes')
+const products = require('./routes/productsRoutes')
 const connectDB = require('./config/db')
 const errorHandler = require('./middleware/error')
 
