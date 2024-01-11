@@ -26,6 +26,7 @@ const productSchema = new mongoose.Schema(
       get: getPrice,
       set: setPrice,
     },
+    images: [String],
   },
   { toJSON: { getters: true } }
 )

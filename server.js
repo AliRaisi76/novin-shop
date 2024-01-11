@@ -2,12 +2,12 @@ const express = require('express')
 const dotenv = require('dotenv')
 const colors = require('colors')
 const morgan = require('morgan')
+// Loading ENV variables
+dotenv.config({ path: './config/config.env' })
+
 const products = require('./routes/productsRoutes')
 const connectDB = require('./config/db')
 const errorHandler = require('./middleware/error')
-
-// Loading ENV variables
-dotenv.config({ path: './config/config.env' })
 
 connectDB()
 

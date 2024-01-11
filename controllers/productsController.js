@@ -1,6 +1,11 @@
 const Product = require('../models/productModel')
 const ErrorResponse = require('../utils/ErrorResponse')
 
+// Image Upload config
+const { storage } = require('../cloudinary/index')
+const multer = require('multer')
+const upload = multer({ storage })
+
 // @desc Get all products in the DB
 // @route GET /api/v1/products
 // @access Public
@@ -80,7 +85,7 @@ exports.getProducts = async (req, res, next) => {
 
 // @desc Get a product by its id
 // @route GET /api/v1/products/:id
-// @access Public
+// @access Public(admin)
 exports.getOneProduct = async (req, res, next) => {
   try {
     const product = await Product.findById(req.params.id)
@@ -102,7 +107,7 @@ exports.getOneProduct = async (req, res, next) => {
 
 // @desc Add a product to DB
 // @route POST /api/v1/products/:category
-// @access Private
+// @access Private(admin)
 exports.createProduct = async (req, res, next) => {
   try {
     const product = await Product.create(req.body)
@@ -122,7 +127,7 @@ exports.createProduct = async (req, res, next) => {
 
 // @desc Modify a product
 // @route UPDATE /api/v1/products/:id
-// @access private
+// @access private(admin)
 exports.updateProduct = async (req, res, next) => {
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
@@ -145,7 +150,7 @@ exports.updateProduct = async (req, res, next) => {
 
 // @desc Delete a product
 // @route DELETE /api/v1/products/:id
-// @access Private
+// @access Private(admin)
 exports.deleteProduct = async (req, res, next) => {
   try {
     const product = await Product.findByIdAndDelete(req.params.id)
@@ -160,5 +165,25 @@ exports.deleteProduct = async (req, res, next) => {
     })
   } catch (err) {
     next(err)
+  }
+}
+
+// @desc Upload image or images for the resource(here the product)
+// @route PUT /api/v1/products/:id
+// @access Private(admin)
+exports.uploadImage = async (req, res, next) => {
+  try {
+    const product = await Product.findByIdAndUpdate(req.params.id, req.body)
+
+    const imgs = req.files.map((f) => f.path)
+    console.log(req.files)
+    product.images.push(...imgs)
+    product.save()
+    res.status(200).json({
+      message: 'Worked',
+      data: imgs,
+    })
+  } catch (err) {
+    console.log(err)
   }
 }
