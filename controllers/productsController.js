@@ -1,11 +1,6 @@
 const Product = require('../models/productModel')
 const ErrorResponse = require('../utils/ErrorResponse')
 
-// Image Upload config
-const { storage } = require('../cloudinary/index')
-const multer = require('multer')
-const upload = multer({ storage })
-
 // @desc Get all products in the DB
 // @route GET /api/v1/products
 // @access Public
@@ -19,7 +14,6 @@ exports.getProducts = async (req, res, next) => {
     priceRange.forEach((range) => {
       reqQuery.price[range] = `${reqQuery.price[range]}00`
     })
-
     const removeFields = ['select', 'sort', 'limit', 'page']
 
     removeFields.forEach((param) => delete reqQuery[param])
@@ -31,7 +25,6 @@ exports.getProducts = async (req, res, next) => {
     )
 
     query = Product.find(JSON.parse(queryString))
-    console.log(query)
     // SELECT FIELDS
     if (req.query.select) {
       const fields = req.query.select.split(',').join(' ')
@@ -56,7 +49,7 @@ exports.getProducts = async (req, res, next) => {
     query = query.skip(startIndex).limit(limit)
 
     const products = await query
-
+    console.log(products)
     // Pagination results
     const pagination = {}
     if (endIndex < total) {
