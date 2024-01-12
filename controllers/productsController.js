@@ -6,71 +6,7 @@ const ErrorResponse = require('../utils/ErrorResponse')
 // @access Public
 exports.getProducts = async (req, res, next) => {
   try {
-    let query
-    let reqQuery = { ...req.query }
-
-    // Convert the queried price from dollar form to cent form
-    const priceRange = Object.keys(reqQuery.price)
-    priceRange.forEach((range) => {
-      reqQuery.price[range] = `${reqQuery.price[range]}00`
-    })
-    const removeFields = ['select', 'sort', 'limit', 'page']
-
-    removeFields.forEach((param) => delete reqQuery[param])
-
-    let queryString = JSON.stringify(reqQuery)
-    queryString = queryString.replace(
-      /\b(gt|gte|lt|lte|in)\b/g,
-      (match) => `$${match}`
-    )
-
-    query = Product.find(JSON.parse(queryString))
-    // SELECT FIELDS
-    if (req.query.select) {
-      const fields = req.query.select.split(',').join(' ')
-      query = query.select(fields)
-    }
-
-    // SORT
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(',').join(' ')
-      query = query.sort(sortBy)
-    } else {
-      query = query.sort('-price')
-    }
-
-    // PAGINATION
-    const page = parseInt(req.query.page, 10) || 1
-    const limit = parseInt(req.query.limit, 10) || 20
-    const startIndex = (page - 1) * limit
-    const endIndex = page * limit
-    const total = await Product.countDocuments()
-
-    query = query.skip(startIndex).limit(limit)
-
-    const products = await query
-    console.log(products)
-    // Pagination results
-    const pagination = {}
-    if (endIndex < total) {
-      pagination.next = {
-        page: page + 1,
-        limit,
-      }
-    }
-    if (startIndex > 0) {
-      pagination.prev = {
-        page: page - 1,
-        limit,
-      }
-    }
-
-    res.status(200).json({
-      message: 'All products fetched!',
-      count: products.length,
-      pagination,
-      data: products,
-    })
+    res.status(200).json(res.advancedResults)
   } catch (err) {
     next(err)
   }

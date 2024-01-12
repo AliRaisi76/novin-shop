@@ -1,6 +1,8 @@
 const express = require('express')
-
 const { upload } = require('../cloudinary')
+
+const advancedResults = require('../middleware/advancedResults')
+const Product = require('../models/productModel')
 
 const {
   getProducts,
@@ -13,7 +15,7 @@ const {
 
 const router = express.Router()
 
-router.route('/').get(getProducts).post(createProduct)
+router.route('/').get(advancedResults(Product), getProducts).post(createProduct)
 router.route('/:id').get(getOneProduct).put(updateProduct).delete(deleteProduct)
 
 router.route('/upload-image/:id').put(upload.array('image'), uploadImage)
