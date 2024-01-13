@@ -13,4 +13,11 @@ const userSchema = mongoose.Schema({
   },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
+  role: {
+    type: String,
+    enum: ['customer'],
+    default: 'customer',
+  },
 })
+
+module.exports = new mongoose.Model('user', userSchema)
