@@ -5,7 +5,7 @@ const morgan = require('morgan')
 // Loading ENV variables
 dotenv.config({ path: './config/config.env' })
 
-const products = require('./routes/productsRoutes')
+const products = require('./routes/productRoutes')
 const connectDB = require('./config/db')
 const errorHandler = require('./middleware/error')
 

@@ -11,7 +11,7 @@ const {
   updateProduct,
   deleteProduct,
   uploadImage,
-} = require('../controllers/productsController')
+} = require('../controllers/productController')
 
 const router = express.Router()
 
