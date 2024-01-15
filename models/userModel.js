@@ -42,6 +42,11 @@ userSchema.pre('save', async function (next) {
   next()
 })
 
+// Check if the password matches
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return bcrypt.compare(enteredPassword, this.password)
+}
+
 // Sign jwt token
 userSchema.methods.getSignedJwtToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
