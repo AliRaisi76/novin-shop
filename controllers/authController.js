@@ -39,6 +39,18 @@ exports.login = asyncHandler(async (req, res, next) => {
   sendTokenResponse(user, 200, res)
 })
 
+// @desc Get User Info
+// @route Get /api/v1/users/me
+// @access private
+exports.getMe = asyncHandler(async (req, res, next) => {
+  console.log(req.user.id)
+  const user = await User.findById(req.user.id)
+  res.status(200).json({
+    success: true,
+    data: user,
+  })
+})
+
 const sendTokenResponse = (user, statusCode, res) => {
   // Create token
   const token = user.getSignedJwtToken()
