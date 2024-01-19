@@ -2,6 +2,7 @@ const User = require('../models/userModel')
 const asyncHandler = require('../middleware/asyncHandler')
 const ErrorResponse = require('../utils/ErrorResponse')
 const sendEmail = require('../utils/sendEmail')
+const crypto = require('crypto')
 
 // @desc Register user
 // @route POST /api/v1/auth/register
@@ -92,6 +93,37 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
     return next(new ErrorResponse('Email could not be sent', 500))
   }
+})
+
+// @desc Reset Password
+// @route PUT /api/v1/auth/resetpassword/:resettoken
+// @access Public
+exports.resetPassword = asyncHandler(async (req, res, next) => {
+  const resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(req.params.resettoken)
+    .digest('hex')
+
+  const user = await User.findOne({
+    resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  })
+
+  if (!user) {
+    return next(new ErrorResponse('Invalid token!', 400))
+  }
+
+  if (!req.body.password) {
+    return next(new ErrorResponse('Please set a password', 400))
+  }
+
+  user.password = req.body.password
+  user.resetPasswordToken = undefined
+  user.resetPasswordExpire = undefined
+  user.save()
+
+  // In real world we usually redirect the user to login page and not logging in them
+  sendTokenResponse(user, 200, res)
 })
 
 const sendTokenResponse = (user, statusCode, res) => {
