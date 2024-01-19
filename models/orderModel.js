@@ -24,6 +24,11 @@ const orderSchema = mongoose.Schema({
     type: Date,
     dafault: Date.now,
   },
+  status: {
+    type: String,
+    emun: ['registered', 'processed', 'delivered'],
+    default: 'registered',
+  },
 })
 
 module.exports = mongoose.model('Order', orderSchema)
