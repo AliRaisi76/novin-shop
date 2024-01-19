@@ -1,9 +1,10 @@
 const User = require('../models/userModel')
 const asyncHandler = require('../middleware/asyncHandler')
 const ErrorResponse = require('../utils/ErrorResponse')
+const sendEmail = require('../utils/sendEmail')
 
 // @desc Register user
-// @route Post /api/v1/users/register
+// @route POST /api/v1/auth/register
 // @access Public
 exports.register = asyncHandler(async (req, res, next) => {
   const { email, password, role } = req.body
@@ -13,7 +14,7 @@ exports.register = asyncHandler(async (req, res, next) => {
 })
 
 // @desc User login
-// @route Post /api/v1/users/login
+// @route POST /api/v1/auth/login
 // @access Public
 exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body
@@ -40,7 +41,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 })
 
 // @desc Get User Info
-// @route Get /api/v1/users/me
+// @route GET /api/v1/auth/me
 // @access private
 exports.getMe = asyncHandler(async (req, res, next) => {
   console.log(req.user.id)
@@ -49,6 +50,48 @@ exports.getMe = asyncHandler(async (req, res, next) => {
     success: true,
     data: user,
   })
+})
+
+// @desc Forgot Password
+// @route POST /api/v1/auth
+// @access public
+exports.forgotPassword = asyncHandler(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email })
+  if (!user) {
+    return next(new ErrorResponse('There is no user with that email!', 404))
+  }
+
+  const resetToken = user.getResetPasswordToken()
+
+  await user.save({ validateBeforeSave: false })
+
+  // create reset URL
+  const resetUrl = `${req.protocol}://${req.get(
+    'host'
+  )}/api/v1/auth/resetpassword/${resetToken}`
+
+  const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`
+
+  try {
+    console.log('testing emalining')
+    await sendEmail({
+      email: user.email,
+      subject: 'Password reset token',
+      message,
+    })
+    res.status(200).json({
+      success: true,
+      message: 'Email sent!',
+    })
+  } catch (err) {
+    console.log(err)
+
+    user.resetPasswordToken = undefined
+    user.resetPasswordExpire = undefined
+    await user.save({ validateBeforeSave: false })
+
+    return next(new ErrorResponse('Email could not be sent', 500))
+  }
 })
 
 const sendTokenResponse = (user, statusCode, res) => {
