@@ -1,4 +1,4 @@
-const User = require('../models/userModel')
+const User = require('../models/users/userModel')
 const asyncHandler = require('../middleware/asyncHandler')
 const ErrorResponse = require('../utils/ErrorResponse')
 const sendEmail = require('../utils/sendEmail')
@@ -8,8 +8,8 @@ const crypto = require('crypto')
 // @route POST /api/v1/auth/register
 // @access Public
 exports.register = asyncHandler(async (req, res, next) => {
-  const { email, password, role } = req.body
-  let user = await User.create({ email, password, role })
+  const { email, password } = req.body
+  let user = await User.create({ email, password })
 
   sendTokenResponse(user, 201, res)
 })
@@ -27,7 +27,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
 
   const user = await User.findOne({ email }).select('+password')
-  console.log(user)
+
   if (!user) {
     return next(new ErrorResponse('Invalid credentials', 401))
   }

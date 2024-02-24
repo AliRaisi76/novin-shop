@@ -1,6 +1,7 @@
 const Product = require('../models/productModel')
 const ErrorResponse = require('../utils/ErrorResponse')
 const asyncHandler = require('../middleware/asyncHandler')
+
 // @desc Get all products in the DB
 // @route GET /api/v1/products
 // @access Public

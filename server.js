@@ -7,6 +7,8 @@ dotenv.config({ path: './config/config.env' })
 
 const products = require('./routes/productRoutes')
 const auth = require('./routes/authRoutes')
+const users = require('./routes/userRoutes')
+
 const connectDB = require('./config/db')
 const errorHandler = require('./middleware/error')
 
@@ -20,6 +22,7 @@ app.use(morgan('dev'))
 // Mount routers
 app.use('/api/v1/products', products)
 app.use('/api/v1/auth', auth)
+app.use('/api/v1/users', users)
 
 // Error handler middleware after the router mounting code
 app.use(errorHandler)
