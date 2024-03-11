@@ -19,7 +19,6 @@ const userInfoSchema = mongoose.Schema({
     type: String,
     match: [/^\d{10}$/, 'Please add a valid national code'],
     trim: true,
-    required: [true, 'National Code is required!'],
     required: [true, 'Please add your national code!'],
   },
   phoneNumber: {
@@ -30,6 +29,10 @@ const userInfoSchema = mongoose.Schema({
   },
   birthDate: {
     type: Date,
+  },
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
   },
 })
 

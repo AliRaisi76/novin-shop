@@ -1,9 +1,9 @@
 const express = require('express')
-const { protect, authorize } = require('../middleware/auth')
-const { updateUser } = require('../controllers/userController')
+const { protect } = require('../middleware/auth')
+const { updateUser, getMyInfo } = require('../controllers/userController')
 
 const router = express.Router()
 
-router.route('/').post(protect, updateUser)
+router.route('/').post(protect, updateUser).get(protect, getMyInfo)
 
 module.exports = router

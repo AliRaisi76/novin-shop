@@ -30,4 +30,10 @@ const addressSchema = new mongoose.Schema({
     type: String,
     match: [/^09\d{9}$/, 'Please provide a Valid Iranian phone number!'],
   },
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+  },
 })
+
+module.exports = new mongoose.model('Address', addressSchema)

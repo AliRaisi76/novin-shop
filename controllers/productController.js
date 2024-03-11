@@ -88,7 +88,7 @@ exports.uploadImage = asyncHandler(async (req, res, next) => {
   product.images.push(...imgs)
   product.save()
   res.status(200).json({
-    message: 'Worked',
+    message: 'Uploaded images to the product',
     data: imgs,
   })
 })

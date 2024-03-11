@@ -25,7 +25,6 @@ const userSchema = mongoose.Schema({
     ],
     maxlength: 50,
   },
-
   role: {
     type: String,
     enum: ['customer'],

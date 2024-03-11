@@ -24,7 +24,7 @@ app.use('/api/v1/products', products)
 app.use('/api/v1/auth', auth)
 app.use('/api/v1/users', users)
 
-// Error handler middleware after the router mounting code
+// Error handler middleware after the router mounting
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 5000
